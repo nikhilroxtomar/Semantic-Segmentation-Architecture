@@ -44,7 +44,7 @@ def build_resnet50_unet(input_shape):
     """ Output """
     outputs = Conv2D(1, 1, padding="same", activation="sigmoid")(d4)
 
-    model = Model(inputs, outputs, name="VGG16_U-Net")
+    model = Model(inputs, outputs, name="ResNet50_U-Net")
     return model
 
 if __name__ == "__main__":
