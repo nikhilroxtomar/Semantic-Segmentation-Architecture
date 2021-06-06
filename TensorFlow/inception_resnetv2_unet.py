@@ -23,7 +23,7 @@ def build_inception_resnetv2_unet(input_shape):
     """ Input """
     inputs = Input(input_shape)
 
-    """ Pre-trained ResNet50 Model """
+    """ Pre-trained InceptionResNetV2 Model """
     encoder = InceptionResNetV2(include_top=False, weights="imagenet", input_tensor=inputs)
 
     """ Encoder """
@@ -51,7 +51,7 @@ def build_inception_resnetv2_unet(input_shape):
     """ Output """
     outputs = Conv2D(1, 1, padding="same", activation="sigmoid")(d4)
 
-    model = Model(inputs, outputs, name="VGG16_U-Net")
+    model = Model(inputs, outputs, name="InceptionResNetV2_U-Net")
     return model
 
 if __name__ == "__main__":
