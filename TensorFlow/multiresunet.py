@@ -29,7 +29,7 @@ def multires_block(x, num_filters, alpha=1.67):
 def res_path(x, num_filters, length):
     for i in range(length):
         x0 = x
-        x1 = conv_block(x0, num_filters, 3)
+        x1 = conv_block(x0, num_filters, 3, act=False)
         sc = conv_block(x0, num_filters, 1, act=False)
         x = Activation("relu")(x1 + sc)
         x = BatchNormalization()(x)
