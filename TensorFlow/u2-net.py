@@ -13,7 +13,7 @@ def conv_block(inputs, out_ch, rate=1):
 
 def RSU_L(inputs, out_ch, int_ch, num_layers, rate=2):
     """ Initial Conv """
-    x = conv_block(inputs, out_ch, rate=rate)
+    x = conv_block(inputs, out_ch)
     init_feats = x
 
     """ Encoder """
@@ -40,11 +40,11 @@ def RSU_L(inputs, out_ch, int_ch, num_layers, rate=2):
         x = Concatenate()([x, skip[i+1]])
         x = conv_block(x, int_ch)
 
-    x = UpSampling2D(interpolation="bilinear")(x)
+    x = UpSampling2D(size=(2, 2), interpolation="bilinear")(x)
     x = Concatenate()([x, skip[-1]])
     x = conv_block(x, out_ch)
 
-    """ Addition """
+    """ Add """
     x = Add()([x, init_feats])
     return x
 
@@ -74,7 +74,6 @@ def RSU_4F(inputs, out_ch, int_ch):
     x = Add()([x, x0])
     return x
 
-
 def u2net(input_shape, out_ch, int_ch, num_classes=1):
     """ Input Layer """
     inputs = Input(input_shape)
@@ -94,7 +93,7 @@ def u2net(input_shape, out_ch, int_ch, num_classes=1):
     p4 = MaxPool2D((2, 2))(s4)
 
     s5 = RSU_4F(p4, out_ch[4], int_ch[4])
-    p5 =  MaxPool2D((2, 2))(s5)
+    p5 = MaxPool2D((2, 2))(s5)
 
     """ Bridge """
     b1 = RSU_4F(p5, out_ch[5], int_ch[5])
@@ -120,7 +119,7 @@ def u2net(input_shape, out_ch, int_ch, num_classes=1):
     d5 = Concatenate()([u4, s1])
     d5 = RSU_L(d5, out_ch[10], int_ch[10], 7)
 
-    """ Side Output """
+    """ Side Outputs """
     y1 = Conv2D(num_classes, 3, padding="same")(d5)
 
     y2 = Conv2D(num_classes, 3, padding="same")(d4)
@@ -165,7 +164,5 @@ def build_u2net_lite(input_shape, num_classes=1):
     return model
 
 if __name__ == "__main__":
-    input_shape = (512, 512, 3)
-    model = build_u2net_lite(input_shape)
+    model = build_u2net_lite((512, 512, 3))
     model.summary()
-    ##...
