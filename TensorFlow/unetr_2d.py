@@ -38,7 +38,7 @@ def deconv_block(x, num_filters):
 def build_unetr_2d(cf):
     """ Inputs """
     input_shape = (cf["num_patches"], cf["patch_size"]*cf["patch_size"]*cf["num_channels"])
-    inputs = L.Input(input_shape) ## (None, 256, 3072)
+    inputs = L.Input(input_shape) ## (None, 256, 768)
 
     """ Patch + Position Embeddings """
     patch_embed = L.Dense(cf["hidden_dim"])(inputs) ## (None, 256, 768)
