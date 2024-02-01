@@ -6,7 +6,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Activation, MaxPool2D, UpSampling2D, Concatenate, Add
 
 def conv_block(inputs, out_ch, rate=1):
-    x = Conv2D(out_ch, 3, padding="same", dilation_rate=1)(inputs)
+    x = Conv2D(out_ch, 3, padding="same", dilation_rate=rate)(inputs)
     x = BatchNormalization()(x)
     x = Activation("relu")(x)
     return x
