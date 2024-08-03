@@ -1,4 +1,3 @@
-
 import torch
 import torch.nn as nn
 
@@ -51,6 +50,14 @@ class attention_gate(nn.Module):
     def forward(self, g, s):
         Wg = self.Wg(g)
         Ws = self.Ws(s)
+
+        # Padding to match the size
+        diffY = Wg.size()[2] - Ws.size()[2]
+        diffX = Wg.size()[3] - Ws.size()[3]
+
+        Ws = nn.functional.pad(Ws, [diffX // 2, diffX - diffX // 2,
+                                    diffY // 2, diffY - diffY // 2])
+
         out = self.relu(Wg + Ws)
         out = self.output(out)
         return out * s
@@ -65,6 +72,14 @@ class decoder_block(nn.Module):
 
     def forward(self, x, s):
         x = self.up(x)
+
+        # Padding to match the size of x and s
+        diffY = s.size()[2] - x.size()[2]
+        diffX = s.size()[3] - x.size()[3]
+
+        x = nn.functional.pad(x, [diffX // 2, diffX - diffX // 2,
+                                  diffY // 2, diffY - diffY // 2])
+
         s = self.ag(x, s)
         x = torch.cat([x, s], axis=1)
         x = self.c1(x)
@@ -100,9 +115,8 @@ class attention_unet(nn.Module):
         output = self.output(d3)
         return output
 
-
 if __name__ == "__main__":
-    x = torch.randn((8, 3, 256, 256))
+    x = torch.randn((8, 3, 1087, 456))
     model = attention_unet()
     output = model(x)
     print(output.shape)
